@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/abroudoux/yom/internal/forms"
 	"github.com/abroudoux/yom/internal/logs"
 	"github.com/abroudoux/yom/internal/parser"
 	"github.com/abroudoux/yom/internal/reader"
@@ -17,6 +18,9 @@ func main() {
 
 	filePath := os.Args[1]
 	logs.Info(fmt.Sprintf("Reading file %s", filePath))
+
+	payer := forms.GetPayer()
+	logs.Info(fmt.Sprintf("Payer: %s has paid.", payer))
 
 	items, err := reader.ReadFile(filePath)
 	if err != nil {
