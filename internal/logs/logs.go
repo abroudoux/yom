@@ -1,6 +1,8 @@
 package logs
 
-import "github.com/charmbracelet/log"
+import (
+	"github.com/charmbracelet/log"
+)
 
 func Error(msg string, err error) {
 	log.Error(msg, err)

@@ -10,12 +10,20 @@ import (
 
 func main() {
 	if len(os.Args) < 1 {
-		logs.Fatal("You need to provide a file path as an argument.", nil)
+		logs.Error("You need to provide a file path as an argument.", nil)
 		os.Exit(1)
 	}
 
 	filePath := os.Args[1]
 	logs.Info(fmt.Sprintf("Reading file %s", filePath))
 
-	reader.ReadFile(filePath)
+	items, err := reader.ReadFile(filePath)
+	if err != nil {
+		logs.Error("Error while reading file: %s", err)
+		os.Exit(1)
+	}
+
+	for _, item := range items {
+		logs.Info(item)
+	}
 }
