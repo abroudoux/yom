@@ -18,7 +18,7 @@ func ParseItems(items []string) []types.Item {
 
 		productName := strings.Join(blocks[:len(blocks) - 1], " ")
 		productPrice := blocks[len(blocks) - 3]
-		parsedItems = append(parsedItems, types.Item{Name: productName, Price: productPrice})
+		parsedItems = append(parsedItems, types.Item{Name: productName, Price: productPrice, Quantity: 1})
 	}
 
 	return parsedItems
