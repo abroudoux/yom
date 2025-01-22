@@ -15,3 +15,7 @@ func Fatal(msg string, err error) {
 func Info(msg string) {
 	log.Info(msg)
 }
+
+func Warn(msg string, val string) {
+	log.Warn(msg, val)
+}

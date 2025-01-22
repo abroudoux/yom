@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/abroudoux/yom/internal/logs"
+	"github.com/abroudoux/yom/internal/parser"
 	"github.com/abroudoux/yom/internal/reader"
 )
 
@@ -23,7 +24,8 @@ func main() {
 		os.Exit(1)
 	}
 
-	for _, item := range items {
-		logs.Info(item)
+	parsedItems := parser.ParseItems(items)
+	for _, item := range parsedItems {
+		logs.Info(fmt.Sprintf("Item: %s, Price: %s", item.Name, item.Price))
 	}
 }
