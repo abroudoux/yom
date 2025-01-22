@@ -1,0 +1,14 @@
+version: "3"
+
+tasks:
+  build:
+    cmds:
+      - go build -o bin/yom cmd/main.go
+
+  run:
+    cmds:
+      - task build && ./bin/yom {{ .CLI_ARGS }}
+
+  dev:
+    cmds:
+      - task build && ./bin/yom ~/dev/go/yom/ressources/grocery-list-example.txt
