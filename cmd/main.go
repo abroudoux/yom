@@ -10,7 +10,7 @@ import (
 
 func main() {
 	if len(os.Args) < 1 {
-		logs.Error("You need to provide a file path as an argument.", nil)
+		logs.Fatal("You need to provide a file path as an argument.", nil)
 		os.Exit(1)
 	}
 
