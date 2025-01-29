@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"slices"
 
+	"github.com/abroudoux/yom/internal/logs"
 	"github.com/abroudoux/yom/internal/types"
 )
 
@@ -55,4 +56,13 @@ func CreateItemDict(items []types.Item) map[string]string {
 	}
 
 	return itemsDict
+}
+
+func PrintResults(payer types.Person, persons []types.Person) {
+	for _, person := range persons {
+		if person.Name == payer.Name {
+			break
+		}
+		logs.Info(fmt.Sprintf("%s owes %v€ to %s", person.Name, person.Amount, payer.Name))
+	}
 }

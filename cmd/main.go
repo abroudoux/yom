@@ -48,7 +48,5 @@ func main() {
 		logs.Error("Error while the distribution of items", err)
 	}
 
-	for _, person := range persons {
-		logs.Info(fmt.Sprintf("Person %s with amount: %v", person.Name, person.Amount))
-	}
+	utils.PrintResults(payer, persons)
 }
