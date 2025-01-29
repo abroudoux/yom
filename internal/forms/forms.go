@@ -1,6 +1,8 @@
 package forms
 
 import (
+	"fmt"
+
 	"github.com/abroudoux/yom/internal/logs"
 	"github.com/abroudoux/yom/internal/utils"
 	"github.com/charmbracelet/huh"
@@ -23,6 +25,7 @@ func GetPersons(persons *[]string) {
 	}
 
 	*persons = append(*persons, newPerson)
+	logs.Info(fmt.Sprintf("%s has been added.", newPerson))
 	addNewPerson := getConfirmation("Do you want to add a new person?")
 	if addNewPerson {
 		GetPersons(persons)
@@ -38,6 +41,12 @@ func getConfirmation(message string) bool {
 
 func SelectPayer(persons []string) string {
 	var payer string
-	huh.NewSelect[string]().Title("Who has paid?").Options(huh.NewOption("Arthur", "Arthur")).Value(&payer).Run()
+
+	options := make([]huh.Option[string], len(persons))
+	for i, person := range persons {
+		options[i] = huh.NewOption(person, person)
+	}
+
+	huh.NewSelect[string]().Title("Who has paid?").Options(options...).Value(&payer).Run()
 	return payer
 }
