@@ -3,6 +3,8 @@ package utils
 import (
 	"fmt"
 	"slices"
+	"strconv"
+	"strings"
 
 	"github.com/abroudoux/yom/internal/logs"
 	"github.com/abroudoux/yom/internal/types"
@@ -12,28 +14,29 @@ func IsNameAlreadySaved(newName string, names []string) bool {
 	return slices.Contains(names, newName)
 }
 
-func createDuos(names []string) []string {
-	var duos []string
+func createDuos(persons []types.Person) []types.Person {
+	var duos []types.Person
 
-	for i := 0; i < len(names); i++ {
-		for j := i + 1; j < len(names); j++ {
-			firstName := names[i]
-			secondName := names[j]
-			duos = append(duos, fmt.Sprintf("%s & %s", firstName, secondName))
+	for i := 0; i < len(persons); i++ {
+		for j := i + 1; j < len(persons); j++ {
+			firstName := persons[i].Name
+			secondName := persons[j].Name
+			duoName := firstName + " & " + secondName
+			newDuo := types.Person{
+				Name: duoName,
+				Amount: 0.0,
+			}
+			duos = append(duos, newDuo)
 		}
 	} 
 
 	return duos
 }
 
-func CreateOptions(persons []string) []string {
-	var options []string
-	options = append(options, persons...)
-
-	//duos := createDuos(persons)
-	//options = append(options, duos...)
-
-	return options
+func CreatePersonsAndDuos(persons *[]types.Person) *[]types.Person {
+	duos := createDuos(*persons)
+	personsAndDuos := append(*persons, duos...)
+	return &personsAndDuos
 }
 
 func CreatePersons(names []string) []types.Person {
@@ -66,3 +69,7 @@ func PrintResults(payer types.Person, persons []types.Person) {
 		logs.Info(fmt.Sprintf("%s owes %v€ to %s", person.Name, person.Amount, payer.Name))
 	}
 }
+
+func ConvertPriceStringToFlat(price string) (float64, error) {
+	return strconv.ParseFloat(strings.ReplaceAll(price, ",", "."), 64)
+} 

@@ -2,7 +2,6 @@ package forms
 
 import (
 	"fmt"
-	"strconv"
 	"strings"
 
 	"github.com/abroudoux/yom/internal/logs"
@@ -43,10 +42,6 @@ func getConfirmation(message string) bool {
 }
 
 func SelectPayer(persons []types.Person) types.Person {
-	return selectPerson(persons, "Who has paid?")
-}
-
-func selectPerson(persons []types.Person, msg string) types.Person {
 	var personSelected types.Person
 
 	options := make([]huh.Option[string], len(persons))
@@ -54,29 +49,53 @@ func selectPerson(persons []types.Person, msg string) types.Person {
 		options[i] = huh.NewOption(name.Name, name.Name)
 	}
 
-	huh.NewSelect[string]().Title(msg).Options(options...).Value(&personSelected.Name).Run()
+	huh.NewSelect[string]().Title("Who has paid?").Options(options...).Value(&personSelected.Name).Run()
 	return personSelected
 }
 
-func attributeItem(persons []types.Person, item types.Item) types.Person {
-	msg := fmt.Sprintf("%s (%s)", item.Name, item.Price)
-	return selectPerson(persons, msg)
+func selectPerson(personsAndDuos *[]types.Person, title string) types.Person {
+	var personSelected types.Person
+
+	options := make([]huh.Option[string], len(*personsAndDuos))
+	for i, person := range *personsAndDuos {
+		options[i] = huh.NewOption(person.Name, person.Name)
+	}
+
+	huh.NewSelect[string]().Title(title).Options(options...).Value(&personSelected.Name).Run()
+
+	return personSelected
 }
 
-func MakeDistribution(persons *[]types.Person, items []types.Item) (error) {
+func MakeDistribution(persons *[]types.Person, items []types.Item) error {
+	personsAndDuos := utils.CreatePersonsAndDuos(persons)
+
 	for _, item := range items {
-		selectedPerson := attributeItem(*persons, item)
-		priceItem, err := strconv.ParseFloat(strings.ReplaceAll(item.Price, ",", "."), 64)
+		title := fmt.Sprintf("%s: %s", item.Name, item.Price)
+		personSelected := selectPerson(personsAndDuos, title)
+
+		priceItem, err := utils.ConvertPriceStringToFlat(item.Price)
 		if err != nil {
 			return err
 		}
 
-		for i := range *persons {
-            if (*persons)[i].Name == selectedPerson.Name {
-                (*persons)[i].Amount += priceItem
-                break
-            }
-        }
+		if strings.Contains(personSelected.Name, " & ") {
+			names := strings.Split(personSelected.Name, " & ")
+			for _, name := range names {
+				for i := range *persons {
+					if (*persons)[i].Name == name {
+						(*persons)[i].Amount += priceItem / 2
+						break
+					}
+				}
+			}
+		} else {
+			for i := range *persons {
+				if (*persons)[i].Name == personSelected.Name {
+					(*persons)[i].Amount += priceItem
+					break
+				}
+			}
+		}
 	}
 
 	return nil
