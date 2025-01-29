@@ -2,6 +2,8 @@ package forms
 
 import (
 	"fmt"
+	"strconv"
+	"strings"
 
 	"github.com/abroudoux/yom/internal/logs"
 	"github.com/abroudoux/yom/internal/types"
@@ -36,22 +38,46 @@ func GetNames(names *[]string) {
 
 func getConfirmation(message string) bool {
 	var confirm bool
-	huh.NewConfirm().Title(message).Affirmative("Yes!").Negative("No.").Value(&confirm).Run()
+	huh.NewConfirm().Title(message).Negative("No").Affirmative("Yes!").Value(&confirm).Run()
 	return confirm
 }
 
 func SelectPayer(persons []types.Person) types.Person {
-	var payer types.Person
+	return selectPerson(persons, "Who has paid?")
+}
+
+func selectPerson(persons []types.Person, msg string) types.Person {
+	var personSelected types.Person
 
 	options := make([]huh.Option[string], len(persons))
 	for i, name := range persons {
 		options[i] = huh.NewOption(name.Name, name.Name)
 	}
 
-	huh.NewSelect[string]().Title("Who has paid?").Options(options...).Value(&payer.Name).Run()
-	return payer
+	huh.NewSelect[string]().Title(msg).Options(options...).Value(&personSelected.Name).Run()
+	return personSelected
 }
 
-func MakeDistribution(persons []types.Person, items []types.Item) map[string]string {
+func attributeItem(persons []types.Person, item types.Item) types.Person {
+	msg := fmt.Sprintf("%s (%s)", item.Name, item.Price)
+	return selectPerson(persons, msg)
+}
+
+func MakeDistribution(persons *[]types.Person, items []types.Item) (error) {
+	for _, item := range items {
+		selectedPerson := attributeItem(*persons, item)
+		priceItem, err := strconv.ParseFloat(strings.ReplaceAll(item.Price, ",", "."), 64)
+		if err != nil {
+			return err
+		}
+
+		for i := range *persons {
+            if (*persons)[i].Name == selectedPerson.Name {
+                (*persons)[i].Amount += priceItem
+                break
+            }
+        }
+	}
+
 	return nil
 }

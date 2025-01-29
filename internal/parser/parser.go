@@ -12,7 +12,7 @@ func ParseLines(lines []string) []types.Item {
 	for _, line := range lines {
 		blocks := strings.Fields(line)
 		if len(blocks) < 1 {
-			logs.Warn("Ignoring invalid line: %s", line)
+			logs.WarnMsg("Ignoring invalid line: %s")
 			continue
 		}
 

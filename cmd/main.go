@@ -39,10 +39,16 @@ func main() {
 	}
 
 	persons := utils.CreatePersons(names)
-	for _, person := range persons {
-		fmt.Printf("Name: %s, Amount: %v \n", person.Name, person.Amount)
-	}
 
 	payer := forms.SelectPayer(persons)
 	logs.Info(fmt.Sprintf("%s has paid.", payer.Name))
+
+	err = forms.MakeDistribution(&persons, items)
+	if err != nil {
+		logs.Error("Error while the distribution of items", err)
+	}
+
+	for _, person := range persons {
+		logs.Info(fmt.Sprintf("Person %s with amount: %v", person.Name, person.Amount))
+	}
 }
