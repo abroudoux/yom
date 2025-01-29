@@ -4,31 +4,32 @@ import (
 	"fmt"
 
 	"github.com/abroudoux/yom/internal/logs"
+	"github.com/abroudoux/yom/internal/types"
 	"github.com/abroudoux/yom/internal/utils"
 	"github.com/charmbracelet/huh"
 )
 
-func getPerson(message string) string {
-	var person string
-	huh.NewInput().Title(message).Prompt("? ").Value(&person).Run()
-	return person
+func getName(message string) string {
+	var name string
+	huh.NewInput().Title(message).Prompt("? ").Value(&name).Run()
+	return name
 }
 
-func GetPersons(persons *[]string) {
-	newPerson := getPerson("Add a person")
+func GetNames(names *[]string) {
+	newName := getName("Add a new name.")
 
-	personAlreadySaved := utils.IsPersonAlreadySaved(newPerson, *persons)
-	if personAlreadySaved {
-		logs.WarnMsg("This user is already registered, please enter another one.")
-		GetPersons(persons)
+	nameAlreadySaved := utils.IsNameAlreadySaved(newName, *names)
+	if nameAlreadySaved {
+		logs.WarnMsg("This name is already registered, please enter another one.")
+		GetNames(names)
 		return
 	}
 
-	*persons = append(*persons, newPerson)
-	logs.Info(fmt.Sprintf("%s has been added.", newPerson))
-	addNewPerson := getConfirmation("Do you want to add a new person?")
-	if addNewPerson {
-		GetPersons(persons)
+	*names = append(*names, newName)
+	logs.Info(fmt.Sprintf("%s has been added.", newName))
+	addNewName := getConfirmation("Do you want to add a new person?")
+	if addNewName {
+		GetNames(names)
 		return
 	}
 }
@@ -39,14 +40,18 @@ func getConfirmation(message string) bool {
 	return confirm
 }
 
-func SelectPayer(persons []string) string {
+func SelectPayer(names []string) string {
 	var payer string
 
-	options := make([]huh.Option[string], len(persons))
-	for i, person := range persons {
-		options[i] = huh.NewOption(person, person)
+	options := make([]huh.Option[string], len(names))
+	for i, name := range names {
+		options[i] = huh.NewOption(name, name)
 	}
 
 	huh.NewSelect[string]().Title("Who has paid?").Options(options...).Value(&payer).Run()
 	return payer
+}
+
+func MakeDistribution(persons []string, items []types.Item) map[string]string {
+	return nil
 }

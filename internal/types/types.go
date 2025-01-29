@@ -5,3 +5,8 @@ type Item struct {
 	Price string
 	Quantity int
 }
+
+type Person struct {
+	Name string
+	Amount float64
+}

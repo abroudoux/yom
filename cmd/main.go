@@ -20,29 +20,34 @@ func main() {
 	filePath := os.Args[1]
 	logs.Info(fmt.Sprintf("Reading file %s", filePath))
 
-	items, err := reader.ReadFile(filePath)
+	linesFile, err := reader.ReadFile(filePath)
 	if err != nil {
 		logs.Error("Error while reading file: %s", err)
 		os.Exit(1)
 	}
 
-	parsedItems := parser.ParseItems(items)
-	for _, item := range parsedItems {
+	items := parser.ParseItems(linesFile)
+	for _, item := range items {
 		logs.Info(fmt.Sprintf("Item: %s, Price: %s", item.Name, item.Price))
 	}
 
-	persons := []string{}
-	forms.GetPersons(&persons)
-	if len(persons) < 2 {
+	names := []string{}
+	forms.GetNames(&names)
+	if len(names) < 2 {
 		logs.ErrorMsg("You need at least 2 persons to run this program.")
 		os.Exit(1)
 	}
 
-	payer := forms.SelectPayer(persons)
+	payer := forms.SelectPayer(names)
 	logs.Info(fmt.Sprintf("%s has paid.", payer))
 
-	options := utils.CreateOptions(persons)
-	for _, v := range options {
-		println(v)
+	persons := utils.CreatePersons(names)
+	for _, person := range persons {
+		fmt.Printf("Name: %s, Amount: %v \n", person.Name, person.Amount)
 	}
+
+	//options := utils.CreateOptions(names)
+	//for _, v := range options {
+	//	println(v)
+	//}
 }
