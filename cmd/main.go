@@ -32,15 +32,11 @@ func main() {
 
 	persons := []string{}
 	forms.GetPersons(&persons)
-	for _, v := range persons {
-		println(v)
-	}
-
 	if len(persons) < 2 {
 		logs.ErrorMsg("You need at least 2 persons to run this program.")
 		os.Exit(1)
 	}
 
 	payer := forms.SelectPayer(persons)
-	logs.Info(fmt.Sprintf("Person %s has paid.", payer))
+	logs.Info(fmt.Sprintf("%s has paid.", payer))
 }
