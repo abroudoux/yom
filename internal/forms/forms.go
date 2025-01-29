@@ -1,9 +1,8 @@
 package forms
 
 import (
-	"slices"
-
 	"github.com/abroudoux/yom/internal/logs"
+	"github.com/abroudoux/yom/internal/utils"
 	"github.com/charmbracelet/huh"
 )
 
@@ -16,9 +15,9 @@ func getPerson(message string) string {
 func GetPersons(persons *[]string) {
 	newPerson := getPerson("Add a person")
 
-	personAlreadySaved := isPersonAlreadySaved(newPerson, *persons)
+	personAlreadySaved := utils.IsPersonAlreadySaved(newPerson, *persons)
 	if personAlreadySaved {
-		logs.Warn("This user is already registered, please enter another one: ", "")
+		logs.WarnMsg("This user is already registered, please enter another one.")
 		GetPersons(persons)
 		return
 	}
@@ -29,10 +28,6 @@ func GetPersons(persons *[]string) {
 		GetPersons(persons)
 		return
 	}
-}
-
-func isPersonAlreadySaved(newPerson string, persons []string) bool {
-	return slices.Contains(persons, newPerson)
 }
 
 func getConfirmation(message string) bool {
