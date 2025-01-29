@@ -48,5 +48,5 @@ func main() {
 		logs.Error("Error while the distribution of items", err)
 	}
 
-	utils.PrintResults(payer, persons)
+	utils.PrintResults(&persons, payer)
 }

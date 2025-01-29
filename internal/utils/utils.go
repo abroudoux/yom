@@ -61,8 +61,8 @@ func CreateItemDict(items []types.Item) map[string]string {
 	return itemsDict
 }
 
-func PrintResults(payer types.Person, persons []types.Person) {
-	for _, person := range persons {
+func PrintResults(persons *[]types.Person, payer types.Person, ) {
+	for _, person := range *persons {
 		if person.Name == payer.Name {
 			break
 		}
