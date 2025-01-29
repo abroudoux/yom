@@ -66,6 +66,15 @@ func selectPerson(personsAndDuos *[]types.Person, title string) types.Person {
 	return personSelected
 }
 
+func addItemPriceToPerson(personSelected string, persons *[]types.Person, priceItem float64) {
+	for i := range *persons {
+		if (*persons)[i].Name == personSelected {
+			(*persons)[i].Amount += priceItem
+			break
+		}
+	}
+}
+
 func MakeDistribution(persons *[]types.Person, items []types.Item) error {
 	personsAndDuos := utils.CreatePersonsAndDuos(persons)
 
@@ -81,20 +90,10 @@ func MakeDistribution(persons *[]types.Person, items []types.Item) error {
 		if strings.Contains(personSelected.Name, " & ") {
 			names := strings.Split(personSelected.Name, " & ")
 			for _, name := range names {
-				for i := range *persons {
-					if (*persons)[i].Name == name {
-						(*persons)[i].Amount += priceItem / 2
-						break
-					}
-				}
+				addItemPriceToPerson(name, persons, priceItem / 2)
 			}
 		} else {
-			for i := range *persons {
-				if (*persons)[i].Name == personSelected.Name {
-					(*persons)[i].Amount += priceItem
-					break
-				}
-			}
+			addItemPriceToPerson(personSelected.Name, persons, priceItem)
 		}
 	}
 
