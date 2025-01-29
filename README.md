@@ -1,5 +1,7 @@
 # yom
 
+🥕 Who owes how much to whom?
+
 ## Roadmap
 
 - [ ] Improve parser to handle correctly names and prices
