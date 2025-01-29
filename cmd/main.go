@@ -36,6 +36,11 @@ func main() {
 		println(v)
 	}
 
+	if len(persons) < 2 {
+		logs.ErrorMsg("You need at least 2 persons to run this program.")
+		os.Exit(1)
+	}
+
 	payer := forms.SelectPayer(persons)
 	logs.Info(fmt.Sprintf("Person %s has paid.", payer))
 }
