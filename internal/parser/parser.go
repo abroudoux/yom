@@ -7,12 +7,12 @@ import (
 	"github.com/abroudoux/yom/internal/types"
 )
 
-func ParseItems(items []string) []types.Item {
+func ParseLines(lines []string) []types.Item {
 	var parsedItems []types.Item
-	for _, item := range items {
-		blocks := strings.Fields(item)
+	for _, line := range lines {
+		blocks := strings.Fields(line)
 		if len(blocks) < 1 {
-			logs.Warn("Ignoring invalid item: %s", item)
+			logs.Warn("Ignoring invalid line: %s", line)
 			continue
 		}
 

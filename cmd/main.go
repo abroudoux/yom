@@ -26,7 +26,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	items := parser.ParseItems(linesFile)
+	items := parser.ParseLines(linesFile)
 	for _, item := range items {
 		logs.Info(fmt.Sprintf("Item: %s, Price: %s", item.Name, item.Price))
 	}

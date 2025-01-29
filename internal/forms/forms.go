@@ -52,6 +52,6 @@ func SelectPayer(names []string) string {
 	return payer
 }
 
-func MakeDistribution(persons []string, items []types.Item) map[string]string {
+func MakeDistribution(persons []types.Person, items []types.Item) map[string]string {
 	return nil
 }
