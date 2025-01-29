@@ -19,9 +19,6 @@ func main() {
 	filePath := os.Args[1]
 	logs.Info(fmt.Sprintf("Reading file %s", filePath))
 
-	payer := forms.GetPayer()
-	logs.Info(fmt.Sprintf("Payer: %s has paid.", payer))
-
 	items, err := reader.ReadFile(filePath)
 	if err != nil {
 		logs.Error("Error while reading file: %s", err)
@@ -32,4 +29,13 @@ func main() {
 	for _, item := range parsedItems {
 		logs.Info(fmt.Sprintf("Item: %s, Price: %s", item.Name, item.Price))
 	}
+
+	persons := []string{}
+	forms.GetPersons(&persons)
+	for _, v := range persons {
+		println(v)
+	}
+
+	payer := forms.SelectPayer(persons)
+	logs.Info(fmt.Sprintf("Person %s has paid.", payer))
 }
