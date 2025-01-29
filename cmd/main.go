@@ -38,16 +38,11 @@ func main() {
 		os.Exit(1)
 	}
 
-	payer := forms.SelectPayer(names)
-	logs.Info(fmt.Sprintf("%s has paid.", payer))
-
 	persons := utils.CreatePersons(names)
 	for _, person := range persons {
 		fmt.Printf("Name: %s, Amount: %v \n", person.Name, person.Amount)
 	}
 
-	//options := utils.CreateOptions(names)
-	//for _, v := range options {
-	//	println(v)
-	//}
+	payer := forms.SelectPayer(persons)
+	logs.Info(fmt.Sprintf("%s has paid.", payer.Name))
 }

@@ -40,15 +40,15 @@ func getConfirmation(message string) bool {
 	return confirm
 }
 
-func SelectPayer(names []string) string {
-	var payer string
+func SelectPayer(persons []types.Person) types.Person {
+	var payer types.Person
 
-	options := make([]huh.Option[string], len(names))
-	for i, name := range names {
-		options[i] = huh.NewOption(name, name)
+	options := make([]huh.Option[string], len(persons))
+	for i, name := range persons {
+		options[i] = huh.NewOption(name.Name, name.Name)
 	}
 
-	huh.NewSelect[string]().Title("Who has paid?").Options(options...).Value(&payer).Run()
+	huh.NewSelect[string]().Title("Who has paid?").Options(options...).Value(&payer.Name).Run()
 	return payer
 }
 
