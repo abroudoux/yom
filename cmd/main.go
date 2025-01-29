@@ -8,6 +8,7 @@ import (
 	"github.com/abroudoux/yom/internal/logs"
 	"github.com/abroudoux/yom/internal/parser"
 	"github.com/abroudoux/yom/internal/reader"
+	"github.com/abroudoux/yom/internal/utils"
 )
 
 func main() {
@@ -39,4 +40,9 @@ func main() {
 
 	payer := forms.SelectPayer(persons)
 	logs.Info(fmt.Sprintf("%s has paid.", payer))
+
+	options := utils.CreateOptions(persons)
+	for _, v := range options {
+		println(v)
+	}
 }
