@@ -7,8 +7,10 @@ import (
 	"github.com/abroudoux/yom/internal/types"
 )
 
-func ParseLines(lines []string) []types.Item {
-	var parsedItems []types.Item
+type Item = types.Item
+
+func ParseLines(lines []string) []Item {
+	var parsedItems []Item
 	for _, line := range lines {
 		if strings.HasPrefix(line, ">>>") {
 			continue
@@ -22,7 +24,7 @@ func ParseLines(lines []string) []types.Item {
 
 		productName := strings.Join(blocks[:len(blocks) - 1], " ")
 		productPrice := blocks[len(blocks) - 3]
-		parsedItems = append(parsedItems, types.Item{Name: productName, Price: productPrice, Quantity: 1})
+		parsedItems = append(parsedItems, Item{Name: productName, Price: productPrice, Quantity: 1})
 	}
 
 	return parsedItems

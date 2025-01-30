@@ -10,6 +10,9 @@ import (
 	"github.com/charmbracelet/huh"
 )
 
+type Person = types.Person
+type Item = types.Item
+
 func getName(message string) string {
 	var name string
 	huh.NewInput().Title(message).Prompt("? ").Value(&name).Run()
@@ -41,8 +44,8 @@ func getConfirmation(message string) bool {
 	return confirm
 }
 
-func SelectPayer(persons []types.Person) types.Person {
-	var personSelected types.Person
+func SelectPayer(persons []Person) Person {
+	var personSelected Person
 
 	options := make([]huh.Option[string], len(persons))
 	for i, name := range persons {
@@ -53,8 +56,8 @@ func SelectPayer(persons []types.Person) types.Person {
 	return personSelected
 }
 
-func selectPerson(personsAndDuos *[]types.Person, title string) types.Person {
-	var personSelected types.Person
+func selectPerson(personsAndDuos *[]Person, title string) Person {
+	var personSelected Person
 
 	options := make([]huh.Option[string], len(*personsAndDuos))
 	for i, person := range *personsAndDuos {
@@ -66,7 +69,7 @@ func selectPerson(personsAndDuos *[]types.Person, title string) types.Person {
 	return personSelected
 }
 
-func MakeDistribution(persons *[]types.Person, items []types.Item) error {
+func MakeDistribution(persons *[]Person, items []Item) error {
 	personsAndDuos := utils.CreatePersonsAndDuos(persons)
 
 	for _, item := range items {
