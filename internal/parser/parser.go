@@ -10,6 +10,10 @@ import (
 func ParseLines(lines []string) []types.Item {
 	var parsedItems []types.Item
 	for _, line := range lines {
+		if strings.HasPrefix(line, ">>>") {
+			continue
+		}
+
 		blocks := strings.Fields(line)
 		if len(blocks) < 1 {
 			logs.WarnMsg("Ignoring invalid line: %s")

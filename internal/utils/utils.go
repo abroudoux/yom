@@ -62,14 +62,25 @@ func CreateItemDict(items []types.Item) map[string]string {
 }
 
 func PrintResults(persons *[]types.Person, payer types.Person, ) {
+	fmt.Println("===== Total =====")
 	for _, person := range *persons {
 		if person.Name == payer.Name {
+			logs.Info(fmt.Sprintf("%s spend %v€.", person.Name, person.Amount))
 			break
 		}
-		logs.Info(fmt.Sprintf("%s owes %v€ to %s", person.Name, person.Amount, payer.Name))
+		logs.Info(fmt.Sprintf("%s owes %v€ to %s.", person.Name, person.Amount, payer.Name))
 	}
 }
 
 func ConvertPriceStringToFlat(price string) (float64, error) {
 	return strconv.ParseFloat(strings.ReplaceAll(price, ",", "."), 64)
-} 
+}
+
+func AddItemPriceToPerson(personSelected string, persons *[]types.Person, priceItem float64) {
+	for i := range *persons {
+		if (*persons)[i].Name == personSelected {
+			(*persons)[i].Amount += priceItem
+			break
+		}
+	}
+}

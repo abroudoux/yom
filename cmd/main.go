@@ -27,9 +27,6 @@ func main() {
 	}
 
 	items := parser.ParseLines(linesFile)
-	for _, item := range items {
-		logs.Info(fmt.Sprintf("Item: %s, Price: %s", item.Name, item.Price))
-	}
 
 	names := []string{}
 	forms.GetNames(&names)
