@@ -36,13 +36,12 @@ func main() {
 	}
 
 	persons := utils.CreatePersons(names)
-	payer := forms.SelectPayer(persons)
-	logs.Info(fmt.Sprintf("%s has paid.", payer.Name))
+	forms.SelectPayer(&persons)
 
 	err = forms.MakeDistribution(&persons, items)
 	if err != nil {
 		logs.Error("Error while the distribution of items", err)
 	}
 
-	utils.PrintResults(&persons, payer)
+	// utils.PrintResults(&persons, payer)
 }

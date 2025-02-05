@@ -9,4 +9,5 @@ type Item struct {
 type Person struct {
 	Name string
 	Amount float64
+	HasPaid bool
 }

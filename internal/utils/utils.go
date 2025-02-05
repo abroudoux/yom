@@ -58,6 +58,7 @@ func CreatePersons(names []string) []Person {
 		newPerson := Person{
 			Name: name,
 			Amount: 0.0,
+			HasPaid: false,
 		}
 		persons = append(persons, newPerson)
 	}

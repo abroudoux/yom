@@ -44,17 +44,25 @@ func getConfirmation(message string) bool {
 	return confirm
 }
 
-func SelectPayer(persons []Person) Person {
-	var personSelected Person
+func SelectPayer(persons *[]Person) {
+	var selectedName string
 
-	options := make([]huh.Option[string], len(persons))
-	for i, name := range persons {
-		options[i] = huh.NewOption(name.Name, name.Name)
+	options := make([]huh.Option[string], len(*persons))
+	for i, person := range *persons {
+		options[i] = huh.NewOption(person.Name, person.Name)
 	}
 
-	huh.NewSelect[string]().Title("Who has paid?").Options(options...).Value(&personSelected.Name).Run()
-	return personSelected
+	huh.NewSelect[string]().Title("Who has paid?").Options(options...).Value(&selectedName).Run()
+
+	for i := range *persons {
+		if (*persons)[i].Name == selectedName {
+			(*persons)[i].HasPaid = true
+			logs.Info(fmt.Sprintf("%s has paid.", (*persons)[i].Name))
+			break
+		}
+	}
 }
+
 
 func selectPerson(personsAndDuos *[]Person, title string) Person {
 	var personSelected Person
