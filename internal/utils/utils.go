@@ -42,6 +42,8 @@ func CreatePersonsAndDuos(persons *[]Person) *[]Person {
 	return &personsAndDuos
 }
 
+func CreateAllCombinations(person *[]Person) *[]Person {}
+
 func CreatePersons(names []string) []Person {
 	var persons []Person
 	for _, name := range names {
