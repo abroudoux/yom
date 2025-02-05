@@ -7,8 +7,10 @@ tasks:
 
   run:
     cmds:
-      - task build && ./bin/yom {{ .CLI_ARGS }}
+      - task build
+      - ./bin/yom {{ .CLI_ARGS }}
 
   dev:
     cmds:
-      - task build && ./bin/yom ~/dev/go/yom/ressources/grocery-list-05.02.25.txt
+      - task build
+      - ./bin/yom ~/dev/go/yom/ressources/grocery-list-05.02.25.txt
