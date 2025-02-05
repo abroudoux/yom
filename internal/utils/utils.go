@@ -122,11 +122,11 @@ func PrintResults(persons *[]Person) {
 
     for _, person := range *persons {
         if person.HasPaid {
-            logs.Info(fmt.Sprintf("%s paid %v€ in total.", person.Name, person.Amount))
+            logs.Info(fmt.Sprintf("%s paid %.2f€ in total.", person.Name, person.Amount))
         } else {
             amountOwed := person.Amount
             if amountOwed > 0 {
-                logs.Info(fmt.Sprintf("%s owes %v€ to %s.", person.Name, amountOwed, payer.Name))
+                logs.Info(fmt.Sprintf("%s owes %.2f€ to %s.", person.Name, amountOwed, payer.Name))
             } else {
                 logs.Info(fmt.Sprintf("%s doesn't owe anything.", person.Name))
             }
