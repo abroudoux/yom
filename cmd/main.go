@@ -45,9 +45,5 @@ func main() {
 		logs.Error("Error while the distribution of items", err)
 	}
 
-	// for _, p := range persons {
-	// 	fmt.Printf("Person %s and his amount %f \n", p.Name, p.Amount)
-	// }
-
 	utils.PrintResults(&persons, payer)
 }
