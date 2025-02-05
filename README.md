@@ -27,6 +27,7 @@ Then run it by passing your grocery ticket's path
 - [x] Improve parser to handle names and prices correctly
 - [x] Handle items shared by multiple users
 - [ ] Parse quantity
+- [ ] Handle cases when there's more than 3 people
 
 ## License
 
