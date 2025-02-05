@@ -1,13 +1,10 @@
 package main
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/abroudoux/yom/internal/forms"
 	"github.com/abroudoux/yom/internal/logs"
-	"github.com/abroudoux/yom/internal/parser"
-	"github.com/abroudoux/yom/internal/reader"
 	"github.com/abroudoux/yom/internal/utils"
 )
 
@@ -18,15 +15,7 @@ func main() {
 	}
 
 	filePath := os.Args[1]
-	logs.Info(fmt.Sprintf("Reading file %s", filePath))
-
-	linesFile, err := reader.ReadFile(filePath)
-	if err != nil {
-		logs.Error("Error while reading file: %s", err)
-		os.Exit(1)
-	}
-
-	items := parser.ParseLines(linesFile)
+	items := utils.GetItems(filePath)
 
 	names := []string{}
 	forms.GetNames(&names)
@@ -38,7 +27,7 @@ func main() {
 	persons := utils.CreatePersons(names)
 	forms.SelectPayer(&persons)
 
-	err = forms.MakeDistribution(&persons, items)
+	err := forms.MakeDistribution(&persons, items)
 	if err != nil {
 		logs.Error("Error while the distribution of items", err)
 	}
