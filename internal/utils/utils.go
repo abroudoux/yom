@@ -42,7 +42,9 @@ func CreatePersonsAndDuos(persons *[]Person) *[]Person {
 	return &personsAndDuos
 }
 
-func CreateAllCombinations(person *[]Person) *[]Person {}
+func CreateAllCombinations(persons *[]Person) *[]Person {
+	return persons
+}
 
 func CreatePersons(names []string) []Person {
 	var persons []Person

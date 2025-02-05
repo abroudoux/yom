@@ -73,7 +73,7 @@ func MakeDistribution(persons *[]Person, items []Item) error {
 	personsAndDuos := utils.CreatePersonsAndDuos(persons)
 
 	for _, item := range items {
-		title := fmt.Sprintf("%s: %s", item.Name, item.Price)
+		title := fmt.Sprintf("%s: %s€", item.Name, item.Price)
 		personSelected := selectPerson(personsAndDuos, title)
 
 		priceItem, err := utils.ConvertPriceStringToFlat(item.Price)
