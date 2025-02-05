@@ -73,7 +73,7 @@ func PrintResults(persons *[]Person, payer Person, ) {
 	for _, person := range *persons {
 		if person.Name == payer.Name {
 			logs.Info(fmt.Sprintf("%s spend %v€.", person.Name, person.Amount))
-			break
+			continue
 		}
 		logs.Info(fmt.Sprintf("%s owes %v€ to %s.", person.Name, person.Amount, payer.Name))
 	}
