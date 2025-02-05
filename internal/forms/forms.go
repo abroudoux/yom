@@ -2,6 +2,7 @@ package forms
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/abroudoux/yom/internal/logs"
 	"github.com/abroudoux/yom/internal/types"
@@ -19,13 +20,13 @@ func getName(message string) string {
 	return name
 }
 
-func GetNames(names *[]string) {
+func getNames(names *[]string) {
 	newName := getName("Add a new name.")
 
 	nameAlreadySaved := utils.IsNameAlreadySaved(newName, *names)
 	if nameAlreadySaved {
 		logs.WarnMsg("This name is already registered, please enter another one.")
-		GetNames(names)
+		getNames(names)
 		return
 	}
 
@@ -33,9 +34,30 @@ func GetNames(names *[]string) {
 	logs.Info(fmt.Sprintf("%s has been added.", newName))
 	addNewName := getConfirmation("Do you want to add a new person?")
 	if addNewName {
-		GetNames(names)
+		getNames(names)
 		return
 	}
+}
+
+func GetPersons() []Person {
+    names := []string{}
+	getNames(&names)
+	if len(names) < 2 {
+		logs.ErrorMsg("You need at least 2 persons to run this program.")
+		os.Exit(1)
+	}
+
+    var persons []Person
+	for _, name := range names {
+		newPerson := Person{
+			Name: name,
+			Amount: 0.0,
+			HasPaid: false,
+		}
+		persons = append(persons, newPerson)
+	}
+
+	return persons
 }
 
 func getConfirmation(message string) bool {
@@ -76,13 +98,8 @@ func selectOption(choices []Choice, title string) Choice {
 	return optionSelected
 }
 
-func MakeDistribution(persons *[]Person, items []Item) error {
-    choices := utils.CreateChoices(persons)
-    if len(choices) == 0 {
-        return fmt.Errorf("no choices available")
-    }
-
-    for _, item := range items {
+func MakeDistribution(choices []Choice, items []Item) error {
+	for _, item := range items {
         title := fmt.Sprintf("%s: %s€", item.Name, item.Price)
         optionSelected := selectOption(choices, title)
 

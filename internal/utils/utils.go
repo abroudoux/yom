@@ -2,55 +2,16 @@ package utils
 
 import (
 	"fmt"
-	"os"
 	"slices"
 	"strconv"
 	"strings"
 
 	"github.com/abroudoux/yom/internal/logs"
-	"github.com/abroudoux/yom/internal/parser"
-	"github.com/abroudoux/yom/internal/reader"
 	. "github.com/abroudoux/yom/internal/types"
 )
 
-func GetItems(filePath string) []Item {
-	logs.Info(fmt.Sprintf("Reading file %s", filePath))
-
-    linesFile, err := reader.ReadFile(filePath)
-	if err != nil {
-		logs.Error("Error while reading file: %s", err)
-		os.Exit(1)
-	}
-
-    items := parser.ParseLines(linesFile)
-    return items
-}
-
-func CreateItemDict(items []Item) map[string]string {
-	itemsDict := make(map[string]string, len(items))
-	for _, item := range items {
-		itemsDict[item.Name] = item.Price
-	}
-
-	return itemsDict
-}
-
 func IsNameAlreadySaved(newName string, names []string) bool {
 	return slices.Contains(names, newName)
-}
-
-func CreatePersons(names []string) []Person {
-	var persons []Person
-	for _, name := range names {
-		newPerson := Person{
-			Name: name,
-			Amount: 0.0,
-			HasPaid: false,
-		}
-		persons = append(persons, newPerson)
-	}
-
-	return persons
 }
 
 func createDuosChoices(persons []Person) []Choice {

@@ -4,6 +4,7 @@ import (
 	"os"
 
 	"github.com/abroudoux/yom/internal/forms"
+	"github.com/abroudoux/yom/internal/items"
 	"github.com/abroudoux/yom/internal/logs"
 	"github.com/abroudoux/yom/internal/utils"
 )
@@ -15,19 +16,18 @@ func main() {
 	}
 
 	filePath := os.Args[1]
-	items := utils.GetItems(filePath)
+	items := items.GetItems(filePath)
 
-	names := []string{}
-	forms.GetNames(&names)
-	if len(names) < 2 {
-		logs.ErrorMsg("You need at least 2 persons to run this program.")
-		os.Exit(1)
-	}
-
-	persons := utils.CreatePersons(names)
+	persons := forms.GetPersons()
 	forms.SelectPayer(&persons)
 
-	err := forms.MakeDistribution(&persons, items)
+	choices := utils.CreateChoices(&persons)
+    if len(choices) == 0 {
+        logs.ErrorMsg("No choice available")
+		os.Exit(1)
+    }
+
+	err := forms.MakeDistribution(choices, items)
 	if err != nil {
 		logs.Error("Error while the distribution of items", err)
 	}
