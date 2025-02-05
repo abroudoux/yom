@@ -7,49 +7,20 @@ import (
 	"strings"
 
 	"github.com/abroudoux/yom/internal/logs"
-	"github.com/abroudoux/yom/internal/types"
+	. "github.com/abroudoux/yom/internal/types"
 )
 
-type Person = types.Person
-type Item = types.Item
+func CreateItemDict(items []Item) map[string]string {
+	itemsDict := make(map[string]string, len(items))
+	for _, item := range items {
+		itemsDict[item.Name] = item.Price
+	}
+
+	return itemsDict
+}
 
 func IsNameAlreadySaved(newName string, names []string) bool {
 	return slices.Contains(names, newName)
-}
-
-func createDuos(persons []Person) []Person {
-	var duos []Person
-
-	for i := 0; i < len(persons); i++ {
-		for j := i + 1; j < len(persons); j++ {
-			firstName := persons[i].Name
-			secondName := persons[j].Name
-			duoName := firstName + " & " + secondName
-			newDuo := Person{
-				Name: duoName,
-				Amount: 0.0,
-			}
-			duos = append(duos, newDuo)
-		}
-	} 
-
-	return duos
-}
-
-func CreatePersonsAndDuos(persons *[]Person) *[]Person {
-	duos := createDuos(*persons)
-	personsAndDuos := append(*persons, duos...)
-	return &personsAndDuos
-}
-
-func CreateChoiceForThreePeople(personsAndDuos *[]Person, persons []Person) *[]Person {
-    if len(persons) < 3 {
-        return personsAndDuos
-    }
-
-    newChoice := fmt.Sprintf("%s, %s & %s", persons[0].Name, persons[1].Name, persons[2].Name)
-    *personsAndDuos = append(*personsAndDuos, Person{Name: newChoice, Amount: 0.0})
-    return personsAndDuos
 }
 
 func CreatePersons(names []string) []Person {
@@ -66,25 +37,59 @@ func CreatePersons(names []string) []Person {
 	return persons
 }
 
-func CreateItemDict(items []Item) map[string]string {
-	itemsDict := make(map[string]string, len(items))
-	for _, item := range items {
-		itemsDict[item.Name] = item.Price
-	}
+func createDuosChoices(persons []Person) []Choice {
+    var duosChoices []Choice
 
-	return itemsDict
+    for i := 0; i < len(persons); i++ {
+        for j := i + 1; j < len(persons); j++ {
+            firstName := persons[i].Name
+            secondName := persons[j].Name
+            duoName := firstName + " & " + secondName
+            newDuoChoice := Choice{
+                Name: duoName,
+                Persons: []*Person{&persons[i], &persons[j]},
+                Format: Duo,
+            }
+            duosChoices = append(duosChoices, newDuoChoice)
+        }
+    }
+
+    return duosChoices
 }
 
-func PrintResults(persons *[]Person, payer Person, ) {
-	fmt.Println("===== Total =====")
-	for _, person := range *persons {
-		if person.Name == payer.Name {
-			logs.Info(fmt.Sprintf("%s spend %v€.", person.Name, person.Amount))
-			continue
-		}
-		logs.Info(fmt.Sprintf("%s owes %v€ to %s.", person.Name, person.Amount, payer.Name))
+func createTrioChoices(persons *[]Person) Choice {
+	trioName := fmt.Sprintf("%s, %s & %s", (*persons)[0].Name, (*persons)[1].Name, (*persons)[2].Name)
+	trioChoice := Choice{
+		Name:    trioName,
+		Persons: []*Person{&(*persons)[0], &(*persons)[1], &(*persons)[2]},
+		Format:  Trio,
 	}
+	return trioChoice
 }
+
+func CreateChoices(persons *[]Person) []Choice {
+    var choices []Choice
+
+    for i := range *persons {
+        soloChoice := Choice{
+            Name:    (*persons)[i].Name,
+            Persons: []*Person{&(*persons)[i]},
+            Format:  Solo,
+        }
+        choices = append(choices, soloChoice)
+    }
+
+    duosChoices := createDuosChoices(*persons)
+    choices = append(choices, duosChoices...)
+
+    if len(*persons) == 3 {
+        trioChoice := createTrioChoices(persons)
+        choices = append(choices, trioChoice)
+    }
+
+    return choices
+}
+
 
 func ConvertPriceStringToFlat(price string) (float64, error) {
 	return strconv.ParseFloat(strings.ReplaceAll(price, ",", "."), 64)
@@ -98,3 +103,34 @@ func AddItemPriceToPerson(personSelected string, persons *[]Person, priceItem fl
 		}
 	}
 }
+
+func PrintResults(persons *[]Person) {
+    fmt.Println("===== Total =====")
+    var payer Person
+
+    for _, person := range *persons {
+        if person.HasPaid {
+            payer = person
+            break
+        }
+    }
+
+    if payer.Name == "" {
+        logs.WarnMsg("No payer found.")
+        return
+    }
+
+    for _, person := range *persons {
+        if person.HasPaid {
+            logs.Info(fmt.Sprintf("%s paid %v€ in total.", person.Name, person.Amount))
+        } else {
+            amountOwed := person.Amount
+            if amountOwed > 0 {
+                logs.Info(fmt.Sprintf("%s owes %v€ to %s.", person.Name, amountOwed, payer.Name))
+            } else {
+                logs.Info(fmt.Sprintf("%s doesn't owe anything.", person.Name))
+            }
+        }
+    }
+}
+

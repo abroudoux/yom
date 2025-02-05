@@ -2,7 +2,6 @@ package forms
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/abroudoux/yom/internal/logs"
 	"github.com/abroudoux/yom/internal/types"
@@ -12,6 +11,7 @@ import (
 
 type Person = types.Person
 type Item = types.Item
+type Choice = types.Choice
 
 func getName(message string) string {
 	var name string
@@ -63,44 +63,52 @@ func SelectPayer(persons *[]Person) {
 	}
 }
 
+func selectOption(choices []Choice, title string) Choice {
+	var optionSelected Choice
 
-func selectPerson(personsAndDuos *[]Person, title string) Person {
-	var personSelected Person
-
-	options := make([]huh.Option[string], len(*personsAndDuos))
-	for i, person := range *personsAndDuos {
-		options[i] = huh.NewOption(person.Name, person.Name)
+	options := make([]huh.Option[string], len(choices))
+	for i, choice := range choices {
+		options[i] = huh.NewOption(choice.Name, choice.Name)
 	}
 
-	huh.NewSelect[string]().Title(title).Options(options...).Value(&personSelected.Name).Run()
+	huh.NewSelect[string]().Title(title).Options(options...).Value(&optionSelected.Name).Run()
 
-	return personSelected
+	return optionSelected
 }
 
 func MakeDistribution(persons *[]Person, items []Item) error {
-	personsAndDuos := utils.CreatePersonsAndDuos(persons)
-	if len(*persons) == 3 {
-		personsAndDuos = utils.CreateChoiceForThreePeople(personsAndDuos, *persons)
-	}
+    choices := utils.CreateChoices(persons)
+    if len(choices) == 0 {
+        return fmt.Errorf("no choices available")
+    }
 
-	for _, item := range items {
-		title := fmt.Sprintf("%s: %s€", item.Name, item.Price)
-		personSelected := selectPerson(personsAndDuos, title)
+    for _, item := range items {
+        title := fmt.Sprintf("%s: %s€", item.Name, item.Price)
+        optionSelected := selectOption(choices, title)
 
-		priceItem, err := utils.ConvertPriceStringToFlat(item.Price)
-		if err != nil {
-			return err
-		}
+        priceItem, err := utils.ConvertPriceStringToFlat(item.Price)
+        if err != nil {
+            return err
+        }
 
-		if strings.Contains(personSelected.Name, " & ") {
-			names := strings.Split(personSelected.Name, " & ")
-			for _, name := range names {
-				utils.AddItemPriceToPerson(name, persons, priceItem / 2)
-			}
-		} else {
-			utils.AddItemPriceToPerson(personSelected.Name, persons, priceItem)
-		}
-	}
+        var selectedChoice Choice
+        for _, choice := range choices {
+            if choice.Name == optionSelected.Name {
+                selectedChoice = choice
+                break
+            }
+        }
 
-	return nil
+        if len(selectedChoice.Persons) == 0 {
+            return fmt.Errorf("no persons associated with the selected choice")
+        }
+
+        splitPrice := priceItem / float64(len(selectedChoice.Persons))
+        for _, person := range selectedChoice.Persons {
+            person.Amount += splitPrice
+        }
+    }
+
+    return nil
 }
+
