@@ -71,6 +71,9 @@ func selectPerson(personsAndDuos *[]Person, title string) Person {
 
 func MakeDistribution(persons *[]Person, items []Item) error {
 	personsAndDuos := utils.CreatePersonsAndDuos(persons)
+	if len(*persons) == 3 {
+		personsAndDuos = utils.CreateChoiceForThreePeople(personsAndDuos, *persons)
+	}
 
 	for _, item := range items {
 		title := fmt.Sprintf("%s: %s€", item.Name, item.Price)

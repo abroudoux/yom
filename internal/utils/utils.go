@@ -42,8 +42,14 @@ func CreatePersonsAndDuos(persons *[]Person) *[]Person {
 	return &personsAndDuos
 }
 
-func CreateAllCombinations(persons *[]Person) *[]Person {
-	return persons
+func CreateChoiceForThreePeople(personsAndDuos *[]Person, persons []Person) *[]Person {
+    if len(persons) < 3 {
+        return personsAndDuos
+    }
+
+    newChoice := fmt.Sprintf("%s, %s & %s", persons[0].Name, persons[1].Name, persons[2].Name)
+    *personsAndDuos = append(*personsAndDuos, Person{Name: newChoice, Amount: 0.0})
+    return personsAndDuos
 }
 
 func CreatePersons(names []string) []Person {

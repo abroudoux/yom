@@ -36,7 +36,6 @@ func main() {
 	}
 
 	persons := utils.CreatePersons(names)
-
 	payer := forms.SelectPayer(persons)
 	logs.Info(fmt.Sprintf("%s has paid.", payer.Name))
 
